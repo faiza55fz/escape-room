@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Temple Escape</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <div id="landing-page">
+        <div class="intro-content">
+            <h1>TEMPLE ESCAPE</h1>
+            <button id="enter-btn" onclick="startGame()">ENTER TEMPLE</button>
+        </div>
+    </div>
+
+    <div id="game-container" style="display: none;">
+        <div id="game-wrapper">
+            <div id="visual-area">
+                <h2 id="room-title">The Temple</h2>
+                <div id="hotspot-container"></div>
+                <button id="return-btn" onclick="returnToTemple()" style="display: none;">Return to Temple</button>
+            </div>
+
+            <div id="right-sidebar">
+                <div class="sidebar-label">INVENTORY</div>
+                <div id="inventory-list">Empty</div>
+                <div class="help-icon">?</div>
+            </div>
+        </div>
+
+        <div class="ui-footer">
+            <div id="game-log">> Welcome, Traveler.</div>
+        </div>
+    </div>
+
+    <div id="popup-overlay" onclick="closePopup()">
+        <div class="popup-content" onclick="event.stopPropagation()">
+            <h2 id="popup-title">Zoom View</h2>
+            <div class="square-frame"><img id="popup-image" src=""></div>
+            <p id="popup-text"></p>
+            <div id="popup-footer">
+                <button id="mix-btn" style="display: none;">MIX FLUIDS</button>
+                <button onclick="closePopup()">Close</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="win-screen">
+        <div class="win-box">
+            <h1>TEMPLE ESCAPED</h1>
+            <p>The Guardian glows. The cosmic balance is restored.</p>
+            <button onclick="location.reload()">PLAY AGAIN</button>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
