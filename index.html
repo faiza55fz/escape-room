@@ -3,15 +3,15 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Temple Escape</title>
+    <title>Temple Escape & Code Space</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
     <div id="landing-page">
-        <div class="intro-content">
-            <h1>TEMPLE ESCAPE</h1>
-            <button id="enter-btn" onclick="startGame()">ENTER TEMPLE</button>
+        <div class="landing-content">
+            <h1>TEMPLE OF THE CORE</h1>
+            <button id="enter-btn" class="cool-btn" onclick="startGame()">ENTER THE SANCTUM</button>
         </div>
     </div>
 
@@ -20,38 +20,49 @@
             <div id="visual-area">
                 <h2 id="room-title">The Temple</h2>
                 <div id="hotspot-container"></div>
-                <button id="return-btn" onclick="returnToTemple()" style="display: none;">Return to Temple</button>
+                <button id="return-btn" class="cool-btn" onclick="returnToTemple()">RETURN</button>
             </div>
 
             <div id="right-sidebar">
-                <div class="sidebar-label">INVENTORY</div>
-                <div id="inventory-list">Empty</div>
-                <div class="help-icon">?</div>
+                <div class="sidebar-header">INVENTORY</div>
+                <div id="inventory-list"></div>
+                <div class="help-circle">?</div>
             </div>
         </div>
 
         <div class="ui-footer">
-            <div id="game-log">> Welcome, Traveler.</div>
+            <div id="game-log">> System initialized...</div>
         </div>
     </div>
 
-    <div id="popup-overlay" onclick="closePopup()">
-        <div class="popup-content" onclick="event.stopPropagation()">
-            <h2 id="popup-title">Zoom View</h2>
-            <div class="square-frame"><img id="popup-image" src=""></div>
-            <p id="popup-text"></p>
-            <div id="popup-footer">
-                <button id="mix-btn" style="display: none;">MIX FLUIDS</button>
-                <button onclick="closePopup()">Close</button>
+    <div id="code-space" style="display: none;">
+        <div class="terminal-header">
+            <span class="pulse">●</span> ENCRYPTED TERMINAL - CORE ACCESS
+        </div>
+        <div class="code-container">
+            <div class="problem-statement">
+                <h3>FINAL CHALLENGE: DATA RECOVERY</h3>
+                <p>Write a function in C, C++, or Java to solve the <strong>Fibonacci Sequence</strong> for N.</p>
+                <p>Example: Input 6 -> Output 8</p>
+            </div>
+            <textarea id="editor" spellcheck="false" placeholder="// Write your logic here..."></textarea>
+            <div class="terminal-footer">
+                <button id="submit-code" class="cool-btn" onclick="validateCode()">SUBMIT ENCRYPTION</button>
             </div>
         </div>
     </div>
 
-    <div id="win-screen">
-        <div class="win-box">
-            <h1>TEMPLE ESCAPED</h1>
-            <p>The Guardian glows. The cosmic balance is restored.</p>
-            <button onclick="location.reload()">PLAY AGAIN</button>
+    <div id="popup-overlay">
+        <div class="popup-content">
+            <h2 id="popup-title">Zoom</h2>
+            <div class="square-frame">
+                <img id="popup-image" src="">
+            </div>
+            <p id="popup-text"></p>
+            <div id="popup-footer">
+                <button id="mix-btn" class="cool-btn" style="display: none;" onclick="startSuccessSequence()">MIX FLUIDS</button>
+                <button class="cool-btn" onclick="closePopup()">CLOSE</button>
+            </div>
         </div>
     </div>
 

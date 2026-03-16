@@ -7,7 +7,7 @@ const state = {
 
 const roomData = {
     temple: {
-        title: "The Temple Hub",
+        title: "The Temple",
         img: "assets/background/temple.jpeg",
         hotspots: [
             { x: 18, y: 35, w: 10, h: 25, action: () => changeRoom("telescope") },
@@ -44,11 +44,9 @@ const roomData = {
     }
 };
 
-// --- CORE ENGINE ---
-
 function startGame() {
     document.getElementById("landing-page").style.display = "none";
-    document.getElementById("game-container").style.display = "flex";
+    document.getElementById("game-container").style.display = "block";
     changeRoom("temple");
 }
 
@@ -64,10 +62,8 @@ function changeRoom(roomKey) {
     room.hotspots.forEach(hs => {
         const div = document.createElement("div");
         div.className = "hotspot";
-        div.style.left = hs.x + "%"; 
-        div.style.top = hs.y + "%";
-        div.style.width = hs.w + "%"; 
-        div.style.height = hs.h + "%";
+        div.style.left = hs.x + "%"; div.style.top = hs.y + "%";
+        div.style.width = hs.w + "%"; div.style.height = hs.h + "%";
         div.onclick = hs.action;
         container.appendChild(div);
     });
@@ -76,85 +72,47 @@ function changeRoom(roomKey) {
 function showZoom(title, img, text, showMix = false) {
     document.getElementById("popup-title").innerText = title;
     const imgElement = document.getElementById("popup-image");
-const frame= document.querySelector(".square-frame");    
+    const frame = document.querySelector(".square-frame");
     const pText = document.getElementById("popup-text");
-if(img){
-    imgElement.src=img;
-    frame.style.display="block";
-}else{
-    frame.style.display="none";
-}
+
+    if(img){
+        imgElement.src = img;
+        frame.style.display = "block";
+    } else {
+        frame.style.display = "none"; // Text-only mode
+    }
+
     pText.innerText = text; 
     pText.className = text.includes("OBTAINED") ? "big-success-text" : "";
-
     document.getElementById("mix-btn").style.display = showMix ? "inline-block" : "none";
     document.getElementById("popup-overlay").style.display = "flex";
-    
     setTimeout(() => document.querySelector(".popup-content").classList.add("active"), 10);
-    
-    if (showMix) {
-        document.getElementById("mix-btn").onclick = startSuccessSequence;
-    }
+    if (showMix) document.getElementById("mix-btn").onclick = startSuccessSequence;
 }
 
 function closePopup() {
     document.querySelector(".popup-content").classList.remove("active");
-    setTimeout(() => {
-        document.getElementById("popup-overlay").style.display = "none";
-    }, 400);
+    setTimeout(() => document.getElementById("popup-overlay").style.display = "none", 400);
 }
 
-// --- GAME ACTIONS (RESTORED) ---
-
-function handleTelescopeHint() {
-    const riddle = "I hold the galaxy but lack the stars,\nI turn in place but travel far.\nLook where the paper meets the wood,\nopposite where the window stands.";
-    showZoom("Telescope", "assets/zooms/telescope.jpeg", riddle);
-}
-
-function handleBook() {
-    showZoom("Ancient Book", "assets/zooms/book.jpeg", "Mix 3 drops of green sun into the purple sea to reveal the gem.");
-}
-
-function handleSphere() {
-    if (!state.inventory.includes("Crystal 2")) {
-        animateCrystal();
-        state.inventory.push("Crystal 2"); 
-        updateUI();
-        showZoom("Sphere", "assets/zooms/sphere.jpeg", "CRYSTAL TWO OBTAINED");
-    } else { 
-        showZoom("Sphere", "assets/zooms/sphere.jpeg", "It's empty."); 
-    }
-}
-
-function handleTV() {
-    const img = state.hasRemote ? "assets/zooms/tv channel changed.jpeg" : "assets/zooms/tv.jpeg";
-    const txt = state.hasRemote ? "Code" : "Static screen. Needs a remote.";
-    showZoom("Monitor", img, txt);
-}
-
-function pickUpRemote() {
-    if (!state.hasRemote) { 
-        state.hasRemote = true; 
-        state.inventory.push("Remote Control"); 
-        updateUI(); 
-        log("Found Remote."); 
-    }
-}
-
-function handleMixing() { 
-    showZoom("Table", "assets/zooms/solutions.jpeg", "Mix fluids?", true); 
-}
-
+// CRYSTAL HANDLERS
 function startSuccessSequence() {
     closePopup();
     setTimeout(() => {
         if (!state.inventory.includes("Crystal 1")) { 
             animateCrystal();
-            state.inventory.push("Crystal 1"); 
-            updateUI(); 
+            state.inventory.push("Crystal 1"); updateUI(); 
             showZoom("SUCCESS", null, "CRYSTAL ONE OBTAINED");
         }
     }, 400);
+}
+
+function handleSphere() {
+    if (!state.inventory.includes("Crystal 2")) {
+        animateCrystal();
+        state.inventory.push("Crystal 2"); updateUI();
+        showZoom("SPHERE", null, "CRYSTAL TWO OBTAINED");
+    } else { showZoom("Sphere", "assets/zooms/sphere.jpeg", "It's empty."); }
 }
 
 function handleSafe() {
@@ -162,17 +120,13 @@ function handleSafe() {
     if (code === "321") {
         if (!state.inventory.includes("Crystal 3")) { 
             animateCrystal(); 
-            state.inventory.push("Crystal 3"); 
-            updateUI(); 
-            showZoom("Vault", null, "CRYSTAL THREE OBTAINED");
+            state.inventory.push("Crystal 3"); updateUI(); 
+            showZoom("VAULT", null, "CRYSTAL THREE OBTAINED");
         }
-    } else if (code !== null) {
-        log("Wrong code.");
     }
 }
 
-// --- FINALE ---
-
+// FINALE & TRANSITION
 function handleMainDoll() {
     const count = state.inventory.filter(i => i.includes("Crystal")).length;
     if (count >= 3) {
@@ -180,34 +134,40 @@ function handleMainDoll() {
         setTimeout(() => {
             let ans = prompt("What is the life-giver?");
             if (ans && ans.toLowerCase().trim() === "water") {
-                showZoom("Guardian Awakened", "assets/zooms/doll_glow.png", "CORRECT. The  Key is revealed in the ripples.");
+                showZoom("Guardian Awakened", "assets/zooms/doll_glow.png", "CORRECT. The way is revealed in the ripples.");
                 state.finalPhase = true; 
                 log("The Guardian has accepted the word.");
             }
-        }, 800);
+        }, 1000);
     } else {
-        showZoom("Guardian", "assets/zooms/doll zoomed.png", "You must find all 3 crystals first.");
+        showZoom("Guardian", "assets/zooms/doll zoomed.png", "Find all 3 crystals first.");
     }
 }
 
 function handleWaterKey() {
     if (state.finalPhase) {
-        document.getElementById("win-screen").style.display = "flex";
+        // TRANSITION TO CODE SPACE
+        document.getElementById("game-container").style.display = "none";
+        document.getElementById("code-space").style.display = "block";
     } else {
         log("The water ripples peacefully, but nothing happens.");
     }
 }
 
-// --- HELPERS ---
+function validateCode() {
+    const code = document.getElementById("editor").value;
+    if (code.length > 20) {
+        alert("ACCESS GRANTED. YOU HAVE ESCAPED THE TEMPLE CORE!");
+        location.reload();
+    } else {
+        alert("Compilation Error: Solution insufficient.");
+    }
+}
 
+// HELPERS
 function updateUI() {
     const list = document.getElementById("inventory-list");
-    // Creates small vertical blocks for each item in the sidebar
-    list.innerHTML = state.inventory.map(item => `
-        <div style="border: 1px solid #0f0; padding: 5px; font-size: 9px; background: rgba(0,255,0,0.1);">
-            ${item}
-        </div>
-    `).join("");
+    list.innerHTML = state.inventory.map(item => `<div class="inventory-item">${item}</div>`).join("");
 }
 
 function animateCrystal() {
@@ -224,4 +184,9 @@ function log(msg) {
     lb.scrollTop = lb.scrollHeight;
 }
 
+function handleTelescopeHint() { showZoom("Telescope", "assets/zooms/telescope.jpeg", "I hold the galaxy but lack the stars...\nLook where the paper meets the wood."); }
+function handleBook() { showZoom("Ancient Book", "assets/zooms/book.jpeg", "Mix 3 drops of green sun into the purple sea."); }
+function handleTV() { showZoom("Monitor", state.hasRemote ? "assets/zooms/tv channel changed.jpeg" : "assets/zooms/tv.jpeg", state.hasRemote ? "Code: 3-2-1" : "Static screen."); }
+function pickUpRemote() { if (!state.hasRemote) { state.hasRemote = true; state.inventory.push("Remote"); updateUI(); log("Found Remote."); } }
+function handleMixing() { showZoom("Table", "assets/zooms/solutions.jpeg", "Mix fluids?", true); }
 function returnToTemple() { changeRoom("temple"); }
