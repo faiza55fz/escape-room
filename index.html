@@ -37,19 +37,27 @@
 
     <div id="code-space" style="display: none;">
         <div class="terminal-header">
-            <span class="pulse">●</span> ENCRYPTED TERMINAL - CORE ACCESS
+            <span class="pulse">●</span> ENCRYPTED TERMINAL - VS CODE FRAME
         </div>
-        <div class="code-container">
-            <div class="problem-statement">
-                <h3>FINAL CHALLENGE: DATA RECOVERY</h3>
-                <p>Write a function in C, C++, or Java to solve the <strong>Fibonacci Sequence</strong> for N.</p>
-                <p>Example: Input 6 -> Output 8</p>
-            </div>
-            <textarea id="editor" spellcheck="false" placeholder="// Write your logic here..."></textarea>
-            <div class="terminal-footer">
-                <button id="submit-code" class="cool-btn" onclick="validateCode()">SUBMIT ENCRYPTION</button>
-            </div>
-        </div>
+        <div class="code-container" style="max-width: 950px; width: 100%; display: flex; flex-direction: column;">
+    <div class="problem-statement">
+        <h3>FINAL CHALLENGE: FAST EXPONENTIATION</h3>
+        <p>Implement a function <code>long long power(long long x, long long n)</code> to compute <strong>x<sup>n</sup></strong>.</p>
+        <p style="color: #f0a030; font-weight: bold;">Condition: You must achieve O(log n) complexity.</p>
+        <p>Example: Input 2, 10 -> Output 1024</p>
+        <p><em>Note: A simple for-loop (O(n)) will only grant 3 points.</em></p>
+    </div>
+
+    <textarea id="editor" spellcheck="false" style="height: 400px; width: 100%;" placeholder="// write your power(x,n) function here... //supports C, C++, Java, and python logic. // remember: O(log n)is required for full marks!!"></textarea>
+
+    <div id="terminal" style="background: #000; color: #aaa; padding: 15px; font-family: 'JetBrains Mono', monospace; font-size: 13px; border-top: 1px solid #333; height: 120px; overflow-y: auto;">
+        <div id="status-bar">$ system: encryption terminal initialized...</div>
+    </div>
+
+    <div class="terminal-footer">
+        <button id="submit-code" class="cool-btn" onclick="validateCode()">SUBMIT ENCRYPTION</button>
+    </div>
+</div>
     </div>
 
     <div id="popup-overlay">

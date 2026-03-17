@@ -1,13 +1,13 @@
 /* --- SHARED COOL BUTTON STYLE --- */
-/* Applies to the Return button and the Popup Close button */
+/* Updated to VS Code Blue for the Final Round */
 #return-btn, .cool-btn {
     position: absolute;
     bottom: 40px;
     left: 50%;
     transform: translateX(-50%);
     padding: 15px 40px;
-    background: #0f0;
-    color: #000;
+    background: #007acc; /* VS Code Blue */
+    color: #fff;
     border: none;
     cursor: pointer;
     font-weight: bold;
@@ -17,10 +17,10 @@
     letter-spacing: 2px;
     z-index: 100;
     transition: all 0.3s ease;
-    box-shadow: 0 0 10px 0 #0f0;
+    box-shadow: 0 0 10px 0 #007acc;
 }
 
-/* Specific positioning for popup buttons so they don't float at the bottom of the screen */
+/* Specific positioning for popup buttons */
 .popup-content .cool-btn {
     position: relative;
     bottom: 0;
@@ -30,17 +30,16 @@
 }
 
 #return-btn:hover, .cool-btn:hover {
-    background: #0a0;
-    box-shadow: 0 0 25px #0f0;
+    background: #005a9e; /* Darker Blue Hover */
+    box-shadow: 0 0 25px #007acc;
     transform: translateX(-50%) scale(1.05);
 }
 
-/* Maintain scaling for popup buttons on hover */
 .popup-content .cool-btn:hover {
     transform: scale(1.05);
 }
 
-/* --- THE REST OF YOUR CSS --- */
+/* --- CORE GAME STYLES (UNTOUCHED) --- */
 * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Courier New', monospace; }
 body { background: #000; color: #0f0; overflow: hidden; }
 
@@ -71,6 +70,65 @@ body { background: #000; color: #0f0; overflow: hidden; }
 }
 .crystal-morph-element { position: fixed; width: 80px; z-index: 999; animation: crystalMorph 1.6s forwards; }
 
-#code-space { width: 100vw; height: 100vh; background: #0d1117; padding: 40px; display: none; flex-direction: column; }
-.problem-statement { background: #161b22; padding: 20px; border: 1px solid #30363d; margin-bottom: 20px; }
-#editor { width: 100%; flex-grow: 1; background: #010409; color: #79c0ff; font-family: monospace; padding: 20px; border: 1px solid #30363d; }
+/* --- UPDATED: FINAL CHALLENGE CODE SPACE (VS CODE BLUE THEME) --- */
+
+#code-space { 
+    width: 100vw; 
+    height: 100vh; 
+    background: #1e1e1e; /* VS Code Dark */
+    padding: 40px; 
+    display: none; 
+    flex-direction: column; 
+    z-index: 200; 
+    position: fixed;
+    top: 0;
+    left: 0;
+}
+
+.problem-statement { 
+    background: #252526; 
+    padding: 20px; 
+    border: 1px solid #3e3e42; 
+    margin-bottom: 20px; 
+    border-left: 4px solid #007acc; /* Blue Accent */
+    color: #cccccc;
+}
+
+#editor { 
+    width: 100%; 
+    flex-grow: 1; /* Makes editor take up remaining screen */
+    background: #1e1e1e; 
+    color: #9cdcfe; /* Light Blue Code text */
+    font-family: 'JetBrains Mono', monospace; 
+    padding: 25px; 
+    border: 1px solid #3e3e42; 
+    font-size: 18px;
+    outline: none;
+    resize: none;
+    line-height: 1.6;
+}
+
+/* Terminal Styling */
+#terminal {
+    background: #000;
+    color: #4fc1ff; /* Terminal Blue output */
+    padding: 15px;
+    height: 160px;
+    border: 1px solid #3e3e42;
+    margin-top: 10px;
+    font-family: 'JetBrains Mono', monospace;
+    overflow-y: auto;
+}
+
+#terminal div { margin-bottom: 5px; }
+#terminal::-webkit-scrollbar { width: 8px; }
+#terminal::-webkit-scrollbar-thumb { background: #333; }
+
+#code-space .cool-btn {
+    position: relative;
+    bottom: 0;
+    left: 0;
+    transform: none;
+    align-self: flex-start;
+    margin-top: 15px;
+}

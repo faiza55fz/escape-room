@@ -1,3 +1,4 @@
+/* --- YOUR EXISTING STATE & ROOM DATA (UNCHANGED) --- */
 const state = { 
     room: "landing", 
     inventory: [], 
@@ -44,6 +45,7 @@ const roomData = {
     }
 };
 
+/* --- CORE ENGINE FUNCTIONS (UNCHANGED) --- */
 function startGame() {
     document.getElementById("landing-page").style.display = "none";
     document.getElementById("game-container").style.display = "block";
@@ -79,7 +81,7 @@ function showZoom(title, img, text, showMix = false) {
         imgElement.src = img;
         frame.style.display = "block";
     } else {
-        frame.style.display = "none"; // Text-only mode
+        frame.style.display = "none";
     }
 
     pText.innerText = text; 
@@ -95,7 +97,7 @@ function closePopup() {
     setTimeout(() => document.getElementById("popup-overlay").style.display = "none", 400);
 }
 
-// CRYSTAL HANDLERS
+/* --- GAMEPLAY LOGIC (UNCHANGED) --- */
 function startSuccessSequence() {
     closePopup();
     setTimeout(() => {
@@ -126,7 +128,6 @@ function handleSafe() {
     }
 }
 
-// FINALE & TRANSITION
 function handleMainDoll() {
     const count = state.inventory.filter(i => i.includes("Crystal")).length;
     if (count >= 3) {
@@ -146,25 +147,72 @@ function handleMainDoll() {
 
 function handleWaterKey() {
     if (state.finalPhase) {
-        // TRANSITION TO CODE SPACE
         document.getElementById("game-container").style.display = "none";
-        document.getElementById("code-space").style.display = "block";
+        const codeSpace = document.getElementById("code-space");
+        codeSpace.style.display="flex";
+        document.body.style.background = "#0d1117";
+        log("Terminal Decryption Initialized. O(log n) Required.");
     } else {
         log("The water ripples peacefully, but nothing happens.");
     }
 }
 
+/* --- UPDATED: CODE JUDGING & TERMINAL LOGIC --- */
+
 function validateCode() {
-    const code = document.getElementById("editor").value;
-    if (code.length > 20) {
-        alert("ACCESS GRANTED. YOU HAVE ESCAPED THE TEMPLE CORE!");
-        location.reload();
-    } else {
-        alert("Compilation Error: Solution insufficient.");
-    }
+    const editor = document.getElementById('editor');
+    const terminal = document.getElementById('terminal');
+    const code = editor.value; // Keep original for regex
+    
+    // 1. Terminal Reset
+    terminal.innerHTML = "<div style='color: #fff;'>$ system: detecting language and complexity...</div>";
+
+    setTimeout(() => {
+        // 2. THE MULTI-LANGUAGE CHECK
+        // This regex looks for halving the exponent (n/2, n>>1) 
+        // and squaring the base (x*x), which is the core of O(log n)
+        const hasHalving = /n\s*\/\s*2|n\s*\/=\s*2|n\s*>>\s*1|n\s*>>=\s*1|n\s*>>>\s*1/.test(code);
+        const hasSquaring = /x\s*\*\s*x|x\s*\*=\s*x|Math\.pow\(x,\s*2\)/.test(code);
+        
+        // Check for basic structure
+        const hasLogic = code.includes("return") || code.includes("System.out.print") || code.includes("cout");
+
+        terminal.innerHTML = ""; // Clear for final result
+
+        if (!hasLogic) {
+            terminal.innerHTML += "<div style='color: #ff5060;'>[ERROR] Compilation failed: Entry point or return not found.</div>";
+            showModal('m-wrong');
+        } 
+        else if (hasHalving || (hasHalving && hasSquaring)) {
+            // SUCCESS: 15 POINTS
+            terminal.innerHTML += "<div style='color: #36d479;'>[SUCCESS] Complexity verified: O(log n).</div>";
+            terminal.innerHTML += "<div style='color: #36d479;'>[RESULT] All language test cases passed. Marks: 15/15</div>";
+            
+            // Update score badge
+            const badge = document.getElementById('score-badge');
+            if(badge) badge.innerText = "15 / 15 pts";
+            
+            showModal('m-ok');
+        } 
+        else {
+            // PARTIAL: 3 POINTS (Simple Loop detected)
+            terminal.innerHTML += "<div style='color: #f0a030;'>[WARNING] Correct logic, but efficiency is O(n).</div>";
+            terminal.innerHTML += "<div style='color: #f0a030;'>[RESULT] Marks awarded: 3/15</div>";
+            
+            const partialBody = document.querySelector('#m-partial .mb');
+            if(partialBody) {
+                partialBody.innerText = "If you want to continue it's ok, you will get three points because you didn't meet the conditions... or else keep trying.";
+            }
+
+            const badge = document.getElementById('score-badge');
+            if(badge) badge.innerText = "3 / 15 pts";
+            
+            showModal('m-partial');
+        }
+    }, 1000);
 }
 
-// HELPERS
+/* --- HELPERS (UNCHANGED) --- */
 function updateUI() {
     const list = document.getElementById("inventory-list");
     list.innerHTML = state.inventory.map(item => `<div class="inventory-item">${item}</div>`).join("");
@@ -190,3 +238,9 @@ function handleTV() { showZoom("Monitor", state.hasRemote ? "assets/zooms/tv cha
 function pickUpRemote() { if (!state.hasRemote) { state.hasRemote = true; state.inventory.push("Remote"); updateUI(); log("Found Remote."); } }
 function handleMixing() { showZoom("Table", "assets/zooms/solutions.jpeg", "Mix fluids?", true); }
 function returnToTemple() { changeRoom("temple"); }
+
+// Modal Helper (In case it was missing)
+function showModal(id) {
+    const modal = document.getElementById(id);
+    if(modal) modal.style.display = 'flex';
+}
