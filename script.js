@@ -3,7 +3,9 @@ const state = {
     room: "landing", 
     inventory: [], 
     hasRemote: false, 
-    finalPhase: false 
+    finalPhase: false,
+    telescopeViewed: false, // NEW: Unlock for Sphere
+    bookRead: false
 };
 
 const roomData = {
@@ -110,6 +112,12 @@ function startSuccessSequence() {
 }
 
 function handleSphere() {
+    if (!state.telescopeViewed) {
+        showZoom("Locked", "assets/zooms/sphere.jpeg", "The Sphere is cold. It seems to be waiting for a celestial alignment.");
+        return;
+    }
+    
+    // Your existing logic continues here...
     if (!state.inventory.includes("Crystal 2")) {
         animateCrystal();
         state.inventory.push("Crystal 2"); updateUI();
@@ -158,58 +166,47 @@ function handleWaterKey() {
 }
 
 /* --- UPDATED: CODE JUDGING & TERMINAL LOGIC --- */
-
 function validateCode() {
     const editor = document.getElementById('editor');
     const terminal = document.getElementById('terminal');
-    const code = editor.value; // Keep original for regex
+    const code = editor.value;
     
-    // 1. Terminal Reset
-    terminal.innerHTML = "<div style='color: #fff;'>$ system: detecting language and complexity...</div>";
+    terminal.innerHTML = "<div style='color: #4fc1ff;'>$ system: performing deep logic scan...</div>";
 
     setTimeout(() => {
-        // 2. THE MULTI-LANGUAGE CHECK
-        // This regex looks for halving the exponent (n/2, n>>1) 
-        // and squaring the base (x*x), which is the core of O(log n)
-        const hasHalving = /n\s*\/\s*2|n\s*\/=\s*2|n\s*>>\s*1|n\s*>>=\s*1|n\s*>>>\s*1/.test(code);
-        const hasSquaring = /x\s*\*\s*x|x\s*\*=\s*x|Math\.pow\(x,\s*2\)/.test(code);
+        // 1. IMPROVED HALVING CHECK (The O(log n) Key)
+        // Detects: / 2, /= 2, >> 1, >>= 1 (with or without spaces)
+        const hasHalving = /(\/\s*=?\s*2)|(>>\s*=?\s*1)/.test(code);
         
-        // Check for basic structure
-        const hasLogic = code.includes("return") || code.includes("System.out.print") || code.includes("cout");
+        // 2. IMPROVED SQUARING CHECK
+        // Detects: x*x, x*=x, x = x*x, or Math.pow
+        const hasSquaring = /([\w]+\s*\*\s*[\w]+)|([\w]+\s*\*\=\s*[\w]+)|Math\.pow/.test(code);
+        
+        // 3. LOOP CHECK
+        const hasLoop = /while|for/.test(code);
 
-        terminal.innerHTML = ""; // Clear for final result
+        // 4. "REAL WORK" CHECK (Prevents 3 marks for empty loops)
+        // Checks if there is an actual assignment or multiplication happening
+        const hasWork = /[\w]+\s*\*=\s*[\w]+|[\w]+\s*=\s*[\w]+\s*\*/.test(code);
 
-        if (!hasLogic) {
-            terminal.innerHTML += "<div style='color: #ff5060;'>[ERROR] Compilation failed: Entry point or return not found.</div>";
-            showModal('m-wrong');
+        terminal.innerHTML = ""; 
+
+        if (hasHalving && hasSquaring && hasLoop) {
+            // YOUR PERFECT CODE LANDS HERE
+            terminal.innerHTML = "<div style='color: #4fc1ff;'>[SUCCESS] Complexity O(log n) verified. 15/15 Marks.</div>";
+            if (typeof showModal === "function") showModal('m-ok');
         } 
-        else if (hasHalving || (hasHalving && hasSquaring)) {
-            // SUCCESS: 15 POINTS
-            terminal.innerHTML += "<div style='color: #36d479;'>[SUCCESS] Complexity verified: O(log n).</div>";
-            terminal.innerHTML += "<div style='color: #36d479;'>[RESULT] All language test cases passed. Marks: 15/15</div>";
-            
-            // Update score badge
-            const badge = document.getElementById('score-badge');
-            if(badge) badge.innerText = "15 / 15 pts";
-            
-            showModal('m-ok');
+        else if (hasLoop && hasWork) {
+            // SLOW BUT CORRECT MATH LANDS HERE
+            terminal.innerHTML = "<div style='color: #ce9178;'>[WARNING] Efficiency threshold not met (O(n) detected). 3/15 Marks.</div>";
+            if (typeof showModal === "function") showModal('m-partial');
         } 
         else {
-            // PARTIAL: 3 POINTS (Simple Loop detected)
-            terminal.innerHTML += "<div style='color: #f0a030;'>[WARNING] Correct logic, but efficiency is O(n).</div>";
-            terminal.innerHTML += "<div style='color: #f0a030;'>[RESULT] Marks awarded: 3/15</div>";
-            
-            const partialBody = document.querySelector('#m-partial .mb');
-            if(partialBody) {
-                partialBody.innerText = "If you want to continue it's ok, you will get three points because you didn't meet the conditions... or else keep trying.";
-            }
-
-            const badge = document.getElementById('score-badge');
-            if(badge) badge.innerText = "3 / 15 pts";
-            
-            showModal('m-partial');
+            // EMPTY LOOPS OR GARBAGE LANDS HERE
+            terminal.innerHTML = "<div style='color: #ff5060;'>[ERROR] No valid logic detected. 0/15 Marks.</div>";
+            if (typeof showModal === "function") showModal('m-wrong');
         }
-    }, 1000);
+    }, 800);
 }
 
 /* --- HELPERS (UNCHANGED) --- */
@@ -232,11 +229,23 @@ function log(msg) {
     lb.scrollTop = lb.scrollHeight;
 }
 
-function handleTelescopeHint() { showZoom("Telescope", "assets/zooms/telescope.jpeg", "I hold the galaxy but lack the stars...\nLook where the paper meets the wood."); }
-function handleBook() { showZoom("Ancient Book", "assets/zooms/book.jpeg", "Mix 3 drops of green sun into the purple sea."); }
+function handleTelescopeHint() { state.telescopeViewed = true; // Sets the lock
+    showZoom("Telescope", "assets/zooms/telescope.jpeg", "I hold the galaxy but lack the stars...\nLook where the paper meets the wood."); 
+}
+function handleBook() { state.bookRead = true; // Sets the lock
+    showZoom("Ancient Book", "assets/zooms/book.jpeg", "Mix 3 drops of green sun into the purple sea."); }
 function handleTV() { showZoom("Monitor", state.hasRemote ? "assets/zooms/tv channel changed.jpeg" : "assets/zooms/tv.jpeg", state.hasRemote ? "Code: 3-2-1" : "Static screen."); }
 function pickUpRemote() { if (!state.hasRemote) { state.hasRemote = true; state.inventory.push("Remote"); updateUI(); log("Found Remote."); } }
-function handleMixing() { showZoom("Table", "assets/zooms/solutions.jpeg", "Mix fluids?", true); }
+ function handleMixing() { 
+    if (!state.bookRead) {
+        showZoom("Chemicals", "assets/zooms/solutions.jpeg", "You see various fluids, but you don't know the safe proportions. You need a guide.");
+        return;
+    }
+
+    // Your existing logic continues here...
+    showZoom("Table", "assets/zooms/solutions.jpeg", "Mix fluids?", true); 
+} 
+
 function returnToTemple() { changeRoom("temple"); }
 
 // Modal Helper (In case it was missing)
