@@ -141,7 +141,7 @@ function handleMainDoll() {
     if (count >= 3) {
         showZoom("The Guardian", "assets/zooms/doll zoomed.png", "The three are home... now speak the name of the life-giver.");
         setTimeout(() => {
-            let ans = prompt("What is the life-giver?");
+            let ans = prompt("I'm a mirror without glass , a road without path , a life without breath      What am I?");
             if (ans && ans.toLowerCase().trim() === "water") {
                 showZoom("Guardian Awakened", "assets/zooms/doll_glow.png", "CORRECT. The way is revealed in the ripples.");
                 state.finalPhase = true; 
